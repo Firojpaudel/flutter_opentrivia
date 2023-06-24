@@ -1,3 +1,4 @@
+//This is day_6 of master flutter session. And the project was to handle the error.
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -7,6 +8,8 @@ import 'package:opentrivia/models/question.dart';
 const String baseUrl = "https://opentdb.com/api.php";
 
 Future<List<Question>> getQuestions(Category category, int? total, String? difficulty) async {
+  try 
+  {
   String url = "$baseUrl?amount=$total&category=${category.id}";
   if(difficulty != null) {
     url = "$url&difficulty=$difficulty";
@@ -14,4 +17,8 @@ Future<List<Question>> getQuestions(Category category, int? total, String? diffi
   http.Response res = await http.get(Uri.parse(url));
   List<Map<String, dynamic>> questions = List<Map<String,dynamic>>.from(json.decode(res.body)["results"]);
   return Question.fromData(questions);
+  } catch (e){
+    print("Error while loading/fetching questions: $e");
+    rethrow;
+  }
 }
